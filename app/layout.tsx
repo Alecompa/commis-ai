@@ -8,9 +8,8 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Kitchen AI Assistant",
-  description: "Generate personalized recipes with AI",
-    generator: 'v0.dev'
+  title: "Commis AI",
+  description: "Generate personalized recipes with AI"
 }
 
 export default function RootLayout({
