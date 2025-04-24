@@ -29,7 +29,7 @@ export const Header = memo(function Header({ toggleSidebar, isSidebarCollapsed }
 
           <div className="flex items-center gap-2">
             <ChefHat className="w-6 h-6 text-autumn-500" />
-            <h1 className="text-xl font-bold">Commis</h1>
+            <h1 className="text-xl font-bold">Commis AI</h1>
           </div>
         </div>
 

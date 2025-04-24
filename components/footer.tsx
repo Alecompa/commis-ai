@@ -13,7 +13,7 @@ export const Footer = memo(function Footer() {
     <footer className="w-full py-4 bg-background border-t border-border h-16">
       <div className="container flex flex-col items-center justify-center h-full px-4 mx-auto text-center">
         <p className="text-sm text-muted-foreground">
-          &copy; {currentYear} Commis. Made with ❤️ by Alessandro Compagnucci.
+          &copy; {currentYear} Commis AI. Made with ❤️ by Alessandro Compagnucci.
         </p>
       </div>
     </footer>
