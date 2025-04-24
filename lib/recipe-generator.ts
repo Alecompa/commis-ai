@@ -45,7 +45,7 @@ Remember to output ONLY the JSON object.`
         case "openai":
           // In a real app, you would call the OpenAI API here
           // For now, use the mock generator
-          result = await mockRecipeGenerator(userPrompt)
+          result = await callOpenAI(systemPrompt, userPrompt)
           break
         case "anthropic":
           result = await mockRecipeGenerator(userPrompt)
@@ -120,7 +120,7 @@ async function callOpenAI(systemPrompt: string, userPrompt: string): Promise<Omi
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "gpt-4.1-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
