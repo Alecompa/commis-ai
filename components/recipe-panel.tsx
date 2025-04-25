@@ -16,8 +16,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Clock, Trash2, ChevronDown, ChevronUp, Download, ImageIcon } from "lucide-react"
+import { Clock, Trash2, ChevronDown, ChevronUp, ImageIcon, FileDown, Loader2 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
+import { generateRecipePDF } from "@/lib/pdf-generator"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface RecipePanelProps {
   recipes: Recipe[]
@@ -30,6 +32,8 @@ export const RecipePanel = memo(function RecipePanel({ recipes, onDelete }: Reci
   const [expandedRecipes, setExpandedRecipes] = useState<Record<number, boolean>>({})
   // Track loading state for images
   const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({})
+  // Track PDF generation state
+  const [generatingPDF, setGeneratingPDF] = useState<Record<number, boolean>>({})
 
   // Initialize loading state for all recipes
   useEffect(() => {
@@ -90,6 +94,22 @@ export const RecipePanel = memo(function RecipePanel({ recipes, onDelete }: Reci
     }
   }, [])
 
+  const downloadPDF = useCallback(async (recipe: Recipe, e: React.MouseEvent) => {
+    e.stopPropagation()
+    console.log("Download PDF clicked for recipe:", recipe.id)
+
+    try {
+      setGeneratingPDF((prev) => ({ ...prev, [recipe.id]: true }))
+      await generateRecipePDF(recipe)
+      console.log("PDF generated and download initiated")
+    } catch (error) {
+      console.error("Error generating PDF:", error)
+      alert("Failed to generate PDF. Please try again.")
+    } finally {
+      setGeneratingPDF((prev) => ({ ...prev, [recipe.id]: false }))
+    }
+  }, [])
+
   const handleImageLoad = useCallback((id: number) => {
     setLoadingImages((prev) => ({
       ...prev,
@@ -126,22 +146,55 @@ export const RecipePanel = memo(function RecipePanel({ recipes, onDelete }: Reci
                       setLoadingImages((prev) => ({ ...prev, [recipe.id]: false }))
                     }}
                   />
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      downloadImage(recipe, e)
-                    }}
-                    title="Download image"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background"
+                        onClick={(e) => e.stopPropagation()}
+                        title="Download options"
+                      >
+                        {generatingPDF[recipe.id] ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <FileDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => downloadPDF(recipe, e as unknown as React.MouseEvent)}
+                        disabled={generatingPDF[recipe.id]}
+                      >
+                        Download as PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => downloadImage(recipe, e as unknown as React.MouseEvent)}>
+                        Download image only
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               ) : (
                 <div className="relative w-full h-48 bg-muted flex items-center justify-center">
                   <ImageIcon className="h-16 w-16 text-muted-foreground/40" />
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      downloadPDF(recipe, e)
+                    }}
+                    disabled={generatingPDF[recipe.id]}
+                  >
+                    {generatingPDF[recipe.id] ? (
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <FileDown className="h-4 w-4 mr-1" />
+                    )}
+                    PDF
+                  </Button>
                 </div>
               )}
 
