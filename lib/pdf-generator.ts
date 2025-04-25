@@ -18,7 +18,8 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
       fontFamily: "Arial, sans-serif",
       position: "absolute",
       left: "-9999px",
-      backgroundColor: "#fff"
+      backgroundColor: "#fff",
+      color: "#000" // Explicitly set text color to black for all content
     }
     
     // Apply styles to both containers
@@ -50,6 +51,7 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
     description.style.fontSize = "14px"
     description.style.marginBottom = "20px"
     description.style.fontStyle = "italic"
+    description.style.color = "#000" // Ensure text is black
     page1Container.appendChild(description)
 
     // Add cooking time
@@ -58,6 +60,7 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
     time.style.fontSize = "14px"
     time.style.marginBottom = "20px"
     time.style.fontWeight = "bold"
+    time.style.color = "#000" // Ensure text is black
     page1Container.appendChild(time)
 
     // Centered image below cooking time
@@ -108,11 +111,13 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
       ul.style.paddingLeft = "18px"
       ul.style.marginBottom = "0"
       ul.style.fontSize = "12px"
+      ul.style.color = "#000" // Ensure list text is black
       items.forEach((ingredient) => {
         const li = document.createElement("li")
         li.textContent = ingredient
         li.style.fontSize = "12px"
         li.style.marginBottom = "3px"
+        li.style.color = "#000" // Ensure list item text is black
         ul.appendChild(li)
       })
       return ul
@@ -161,7 +166,7 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
     // Format the procedure text
     const formattedProcedure = recipe.procedure
       .split("\n")
-      .map((line) => `<p style="margin: 0 0 8px 0;">${line}</p>`)
+      .map((line) => `<p style="margin: 0 0 8px 0; color: #000;">${line}</p>`)
       .join("")
 
     procedure.innerHTML = formattedProcedure
@@ -187,6 +192,12 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
 
     // Function to process a container into a PDF page
     const processPage = async (container: HTMLElement, addNewPage: boolean = false) => {
+      // Force all text elements to be black before rendering
+      const textElements = container.querySelectorAll('p, h1, h2, h3, li, span, div')
+      textElements.forEach(el => {
+        (el as HTMLElement).style.color = "#000"
+      })
+      
       const canvas = await html2canvas(container, {
         scale: 2.5,
         useCORS: true,
