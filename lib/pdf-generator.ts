@@ -24,8 +24,8 @@ export async function generateRecipePDF(recipe: Recipe): Promise<void> {
     
     // Apply styles to both containers
     Object.entries(commonStyles).forEach(([key, value]) => {
-      page1Container.style[key] = value
-      page2Container.style[key] = value
+      page1Container.style[key as any] = value
+      page2Container.style[key as any] = value
     })
     
     page1Container.style.top = "0"

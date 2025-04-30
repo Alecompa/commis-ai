@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
+import { resetOnboarding } from "@/components/onboarding"
 import {
   Dialog,
   DialogContent,
@@ -24,7 +25,7 @@ export function AboutDialog() {
           <InfoIcon className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[625px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <ChefHat className="h-6 w-6 text-autumn-500" />
@@ -33,7 +34,7 @@ export function AboutDialog() {
           <DialogDescription>Your personal AI-powered kitchen companion for recipe inspiration</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 overflow-y-auto">
           <p className="text-muted-foreground">
             Commis helps you create delicious recipes based on ingredients you already have. Simply add
             your available ingredients, select your preferences, and let AI do the rest!
@@ -74,7 +75,18 @@ export function AboutDialog() {
           </p>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 mt-4 pt-2 border-t">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              resetOnboarding();
+              window.location.reload();
+            }}
+            className="mr-auto"
+          >
+            Reset Onboarding
+          </Button>
           <DialogClose asChild>
             <Button type="button">Close</Button>
           </DialogClose>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
+import { Onboarding, hasSeenOnboarding } from "@/components/onboarding"
 import { IngredientPanel } from "@/components/ingredient-panel"
 import { RecipePanel } from "@/components/recipe-panel"
 import { AIProvider } from "@/components/ai-provider"
@@ -82,6 +83,9 @@ function KitchenAppContent({
   initialIngredients: Ingredient[]
   initialRecipes: Recipe[]
 }) {
+  // State for onboarding
+  const [showOnboarding, setShowOnboarding] = useState(!hasSeenOnboarding())
+  
   // State for sidebar collapse
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(initialSidebarState)
 
@@ -230,6 +234,7 @@ function KitchenAppContent({
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {showOnboarding && <Onboarding onComplete={() => setShowOnboarding(false)} />}
       <Header toggleSidebar={toggleSidebar} isSidebarCollapsed={isSidebarCollapsed} />
 
       <div className="flex flex-1 overflow-hidden">
